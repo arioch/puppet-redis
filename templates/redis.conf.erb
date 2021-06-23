@@ -203,7 +203,7 @@ dir <%= @workdir %>
 # refuse the slave request.
 #
 # masterauth <master-password>
-<% if @masterauth -%>masterauth <%= @masterauth %><% end -%>
+<% if @masterauth_unsensitive -%>masterauth <%= @masterauth_unsensitive %><% end -%>
 
 # When a slave loses the connection with the master, or when the replication
 # is still in progress, the slave can act in two different ways:

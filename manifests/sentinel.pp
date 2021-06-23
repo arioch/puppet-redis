@@ -108,37 +108,43 @@
 #   }
 #
 class redis::sentinel (
-  Optional[String[1]] $auth_pass = undef,
-  Stdlib::Absolutepath $config_file = $redis::params::sentinel_config_file,
-  Stdlib::Absolutepath $config_file_orig = $redis::params::sentinel_config_file_orig,
-  Stdlib::Filemode $config_file_mode = '0644',
-  String[1] $conf_template = 'redis/redis-sentinel.conf.erb',
-  Boolean $daemonize = $redis::params::sentinel_daemonize,
-  Boolean $protected_mode = $redis::params::sentinel_protected_mode,
-  Integer[1] $down_after = 30000,
-  Integer[1] $failover_timeout = 180000,
-  Redis::LogLevel $log_level = 'notice',
-  Stdlib::Absolutepath $log_file = $redis::params::sentinel_log_file,
-  String[1] $master_name  = 'mymaster',
-  Stdlib::Host $redis_host = '127.0.0.1',
-  Stdlib::Port $redis_port = 6379,
-  Optional[String[1]] $requirepass = undef,
-  String[1] $package_name = $redis::params::sentinel_package_name,
-  String[1] $package_ensure = 'present',
-  Integer[0] $parallel_sync = 1,
-  Stdlib::Absolutepath $pid_file = $redis::params::sentinel_pid_file,
-  Integer[1] $quorum = 2,
-  Variant[Undef, Stdlib::IP::Address, Array[Stdlib::IP::Address]] $sentinel_bind = undef,
-  Stdlib::Port $sentinel_port = 26379,
-  String[1] $service_group = 'redis',
-  String[1] $service_name = $redis::params::sentinel_service_name,
-  Stdlib::Ensure::Service $service_ensure = 'running',
-  Boolean $service_enable = true,
-  String[1] $service_user = 'redis',
-  Stdlib::Absolutepath $working_dir = $redis::params::sentinel_working_dir,
-  Optional[Stdlib::Absolutepath] $notification_script = undef,
-  Optional[Stdlib::Absolutepath] $client_reconfig_script = undef,
+  Optional[Variant[String[1], Sensitive[String[1]]]]              $auth_pass              = undef,
+  Stdlib::Absolutepath                                            $config_file            = $redis::params::sentinel_config_file,
+  Stdlib::Absolutepath                                            $config_file_orig       = $redis::params::sentinel_config_file_orig,
+  Stdlib::Filemode                                                $config_file_mode       = '0644',
+  String[1]                                                       $conf_template          = 'redis/redis-sentinel.conf.erb',
+  Boolean                                                         $daemonize              = $redis::params::sentinel_daemonize,
+  Boolean                                                         $protected_mode         = $redis::params::sentinel_protected_mode,
+  Integer[1]                                                      $down_after             = 30000,
+  Integer[1]                                                      $failover_timeout       = 180000,
+  Redis::LogLevel                                                 $log_level              = 'notice',
+  Stdlib::Absolutepath                                            $log_file               = $redis::params::sentinel_log_file,
+  String[1]                                                       $master_name            = 'mymaster',
+  Stdlib::Host                                                    $redis_host             = '127.0.0.1',
+  Stdlib::Port                                                    $redis_port             = 6379,
+  Optional[String[1]]                                             $requirepass            = undef,
+  String[1]                                                       $package_name           = $redis::params::sentinel_package_name,
+  String[1]                                                       $package_ensure         = 'present',
+  Integer[0]                                                      $parallel_sync          = 1,
+  Stdlib::Absolutepath                                            $pid_file               = $redis::params::sentinel_pid_file,
+  Integer[1]                                                      $quorum                 = 2,
+  Variant[Undef, Stdlib::IP::Address, Array[Stdlib::IP::Address]] $sentinel_bind          = undef,
+  Stdlib::Port                                                    $sentinel_port          = 26379,
+  String[1]                                                       $service_group          = 'redis',
+  String[1]                                                       $service_name           = $redis::params::sentinel_service_name,
+  Stdlib::Ensure::Service                                         $service_ensure         = 'running',
+  Boolean                                                         $service_enable         = true,
+  String[1]                                                       $service_user           = 'redis',
+  Stdlib::Absolutepath                                            $working_dir            = $redis::params::sentinel_working_dir,
+  Optional[Stdlib::Absolutepath]                                  $notification_script    = undef,
+  Optional[Stdlib::Absolutepath]                                  $client_reconfig_script = undef,
 ) inherits redis::params {
+  $auth_pass_unsensitive = if $auth_pass =~ Sensitive {
+    $auth_pass.unwrap
+  } else {
+    $auth_pass
+  }
+
   require 'redis'
 
   ensure_packages([$package_name])
