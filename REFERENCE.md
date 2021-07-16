@@ -1008,13 +1008,13 @@ Note that this class requires the herculesteam/augeasproviders_sysctl module.
 
 #### Examples
 
-##### 
+#####
 
 ```puppet
 include redis::administration
 ```
 
-##### 
+#####
 
 ```puppet
 class {'redis::administration':
@@ -1081,6 +1081,15 @@ include redis::sentinel
 class {'redis::sentinel':
   down_after => 80000,
   log_file   => '/var/log/redis/sentinel.log',
+}
+```
+
+If installation without redis-server is desired, set `require_redis` parameter to false, i.e
+```puppet
+class { '::redis::sentinel':
+  ...
+  require_redis => false,
+  ...
 }
 ```
 
@@ -1370,6 +1379,14 @@ Data type: `Stdlib::Ensure::Service`
 
 Default value: `'running'`
 
+##### `require_redis`
+
+Data type: `Boolean`
+
+Require redis base class. If set to false, sentinel is installed without redis server.
+
+Default value: ``true``
+
 ## Defined types
 
 ### <a name="redisinstance"></a>`redis::instance`
@@ -1379,7 +1396,7 @@ multiple redis instances on one machine without conflicts
 
 #### Examples
 
-##### 
+#####
 
 ```puppet
 redis::instance {'6380':
